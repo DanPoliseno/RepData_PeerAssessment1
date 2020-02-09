@@ -1,25 +1,74 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+###Daniel Poliseno
+###02/09/2020
 output: 
   html_document:
     keep_md: true
 ---
+###This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals throughout the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 
+###Dataset: (https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip)
 
-## Loading and preprocessing the data
+####The variables included in this dataset are:
 
+* steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)
+* date: The date on which the measurement was taken in YYYY-MM-DD format
+* interval: Identifier for the 5-minute interval in which measurement was taken
 
+###1. Load and Pre-Process the Data
 
-## What is mean total number of steps taken per day?
+```{r}
+library("data.table")
+library(ggplot2)
+library(scales)
+URL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+download.file(URL, destfile = paste0(getwd(), '/repdata%2Fdata%2Factivity.zip'), method = "auto")
+unzip("repdata%2Fdata%2Factivity.zip",exdir = "data")
+```
 
+```{r}
+data()
+```
 
+```{r}
+activitydf <- data.table::fread(input = "data/activity.csv")
+```
+```{r}
+head(activitydf)
+```
+#What is mean total number of steps taken per day?
+#For this part of the assignment, you can ignore the missing values in the dataset.
+###2A. Calculate the total number of steps taken per day
 
-## What is the average daily activity pattern?
+```{r}
+stepsA <-aggregate(steps ~ date, activitydf, FUN=sum)
+```
 
+###2B. Histogram of the total number of steps taken each day
 
+```{r}
+hist(stepsA$steps, col="blue", 
+                     xlab = "Steps", 
+                     ylab = "Frequency",
+                     main = "Steps Taken Daily")
+```
+###2C. Calculate and report the mean and median of the total number of steps taken per day
 
-## Imputing missing values
+```{r}
+meanA <- mean(stepsA$steps)
+```
+```{r}
+medianA <- median(stepsA$steps)
+```
+```{r}
+medianA
+meanA
+```
 
+##MEDIAN = 10765  MEAN= 10766.19
 
+#3. What is the average daily activity pattern?
 
-## Are there differences in activity patterns between weekdays and weekends?
+###3A. Make a time series plot (i.e. \color{red}{\verb|type = "l"|}type="l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
